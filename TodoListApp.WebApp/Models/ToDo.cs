@@ -11,7 +11,7 @@ public class ToDo
     public string Description { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Please enter a due time.")]
-    public DateTime DueDate { get; set; }
+    public DateTime? DueDate { get; set; }
 
     [Required(ErrorMessage = "Please enter a category.")]
     public string CategoryId { get; set; } = string.Empty;
