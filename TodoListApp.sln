@@ -13,19 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		user-stories.md = user-stories.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoListApp", "TodoListApp\TodoListApp.csproj", "{39AC5859-10BF-4BAD-A598-A721BE101CAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoListApp.WebApp", "TodoListApp.WebApp\TodoListApp.WebApp.csproj", "{1F95EE82-00FE-49C4-A3CA-DC669D044F22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoListApp.WebApp", "TodoListApp.WebApp\TodoListApp.WebApp.csproj", "{1F95EE82-00FE-49C4-A3CA-DC669D044F22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoListApp.WebApi", "TodoListApp.WebApi\TodoListApp.WebApi.csproj", "{927FA5F4-99C9-46DD-B533-4D80E8FF32C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoListApp.WebApi", "TodoListApp.WebApi\TodoListApp.WebApi.csproj", "{927FA5F4-99C9-46DD-B533-4D80E8FF32C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoListApp.Data", "TodoListApp.Data\TodoListApp.Data.csproj", "{267C4C54-89C8-4FA0-9761-F282223D9BA9}"
 EndProject
 Global
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {71075FF6-34FF-4DFB-BBA7-7654CC357608}
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -35,18 +29,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Debug|x64.Build.0 = Debug|Any CPU
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Debug|x86.Build.0 = Debug|Any CPU
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Release|x64.ActiveCfg = Release|Any CPU
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Release|x64.Build.0 = Release|Any CPU
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Release|x86.ActiveCfg = Release|Any CPU
-		{39AC5859-10BF-4BAD-A598-A721BE101CAE}.Release|x86.Build.0 = Release|Any CPU
 		{1F95EE82-00FE-49C4-A3CA-DC669D044F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F95EE82-00FE-49C4-A3CA-DC669D044F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F95EE82-00FE-49C4-A3CA-DC669D044F22}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -71,5 +53,23 @@ Global
 		{927FA5F4-99C9-46DD-B533-4D80E8FF32C4}.Release|x64.Build.0 = Release|Any CPU
 		{927FA5F4-99C9-46DD-B533-4D80E8FF32C4}.Release|x86.ActiveCfg = Release|Any CPU
 		{927FA5F4-99C9-46DD-B533-4D80E8FF32C4}.Release|x86.Build.0 = Release|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Debug|x64.Build.0 = Debug|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Debug|x86.Build.0 = Debug|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Release|x64.ActiveCfg = Release|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Release|x64.Build.0 = Release|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Release|x86.ActiveCfg = Release|Any CPU
+		{267C4C54-89C8-4FA0-9761-F282223D9BA9}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {71075FF6-34FF-4DFB-BBA7-7654CC357608}
 	EndGlobalSection
 EndGlobal
