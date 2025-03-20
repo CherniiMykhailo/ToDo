@@ -1,0 +1,29 @@
+@model User
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <h2 class="text-center">Login</h2>
+
+        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+        {
+            <div class="alert alert-danger text-center">
+                @ViewBag.ErrorMessage
+            </div>
+        }
+
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" type="password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <a asp-action="Register" class="btn btn-link w-100">Don't have an account? Register</a>
+        </form>
+    </div>
+</div>

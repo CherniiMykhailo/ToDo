@@ -58,6 +58,73 @@ public class HomeController : Controller
         return this.View(tasks);
     }
 
+    public IActionResult Register()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Register(User user)
+    {
+        if (ModelState.IsValid)
+        {
+            if (context.Users.Any(u => u.Username == user.Username))
+            {
+                ModelState.AddModelError("Username", "Username is already taken.");
+                return View(user);
+            }
+
+            // Додаємо користувача до бази даних
+            var newUser = new User
+            {
+                Username = user.Username,
+                Password = Models.User.HashPassword(user.Password)
+            };
+
+            context.Users.Add(newUser);
+            context.SaveChanges();
+
+            // Перенаправлення на сторінку входу
+            return RedirectToAction("Login");
+        }
+
+        return View(user);
+    }
+
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Login(string username, string password)
+    {
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        {
+            ViewBag.ErrorMessage = "Username and password are required.";
+            return View();
+        }
+
+        var user = context.Users.FirstOrDefault(u => u.Username == username && u.Password == Models.User.HashPassword(password));
+        if (user != null)
+        {
+            // Успішний логін
+            HttpContext.Session.SetString("UserId", user.Id.ToString());
+            HttpContext.Session.SetString("Username", user.Username);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        ViewBag.ErrorMessage = "Invalid username or password.";
+        return View();
+    }
+
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        return RedirectToAction("Login", "Home");
+    }
+
     [HttpGet]
     public IActionResult Add()
     {

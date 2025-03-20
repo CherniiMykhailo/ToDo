@@ -1,3 +1,5 @@
+@inject IHttpContextAccessor HttpContextAccessor
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,15 +9,54 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TodoListApp.WebApp.styles.css" asp-append-version="true" />
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header class="bg-primary text-white text-center">
-            <h1 class="m-3 p-3">My Tasks</h1>
+    <div class="container-fluid d-flex flex-column min-vh-100">
+        <header class="bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center p-3">
+                <h1 class="m-0">My Tasks</h1>
+                <div>
+                    @if (HttpContextAccessor.HttpContext.Session.GetString("Username") != null)
+                    {
+                        <span class="me-3">Welcome, @HttpContextAccessor.HttpContext.Session.GetString("Username")!</span>
+                        <a asp-action="Logout" asp-controller="Home" class="btn btn-danger btn-sm">Logout</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Login" asp-controller="Home" class="btn btn-light btn-sm">Login</a>
+                    }
+                </div>
+            </div>
         </header>
-        <main>
-            @RenderBody()
+
+        <main class="py-4">
+            <div class="container">
+                @RenderBody()
+            </div>
         </main>
+
+        <footer class="text-center text-muted py-3 mt-auto">
+            <small>&copy; 2025 My Tasks. All rights reserved.</small>
+        </footer>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -24,3 +65,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
