@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TodoListApp.WebApp.Models.ViewModels;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TodoListApp.WebApp.Controllers;
 [Authorize]
@@ -47,6 +48,16 @@ public class AccountController : Controller
     public ViewResult Register(string returnUrl = "/")
     {
         return View(new RegisterViewModel
+        {
+            ReturnUrl = returnUrl
+        });
+    }
+
+    [Route("Restore")]
+    [AllowAnonymous]
+    public ViewResult Restore(string returnUrl = "/")
+    {
+        return View(new RestoreViewModel
         {
             ReturnUrl = returnUrl
         });
@@ -108,6 +119,45 @@ public class AccountController : Controller
         }
 
         return View(loginViewModel);
+    }
+
+    [Route("Restore")]
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> Restore(RestoreViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await userManager.FindByNameAsync(model.Name);
+            if (user != null)
+            {
+                var result = await userManager.RemovePasswordAsync(user);
+                if (result.Succeeded)
+                {
+                    result = await userManager.AddPasswordAsync(user, model.Password);
+                    return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    foreach(var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+
+                    return View(model);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Name not found");
+                return View(model);
+            }
+        }
+        else
+        {
+            ModelState.AddModelError("", "Somethink went wrong");
+            return View(model);
+        }
     }
 
     [Route("Logout")]
