@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TodoListApp.WebApp.Models;
 
@@ -6,11 +7,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<ToDoContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TodoListDb")));
-//builder.Services.AddDbContext<ToDoContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("UsersDb")));
+builder.Services.AddDbContext<ToDoContext>(opts =>
+{
+    opts.UseSqlServer(builder.Configuration["ConnectionStrings:TodoListDb"]);
+});
 
-builder.Services.AddSession();
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(builder.Configuration["ConnectionStrings:UsersDb"]));
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>();
+
+builder.Services.AddHttpClient("ToDoAPI", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7184/api/");
+});
+
 
 var app = builder.Build();
 
@@ -21,14 +30,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseSession();
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGet("/", () => Results.Redirect("/Home/Index"));
 
 app.MapControllerRoute(
     name: "default",

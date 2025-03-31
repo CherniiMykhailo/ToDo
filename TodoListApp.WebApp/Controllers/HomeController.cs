@@ -1,19 +1,51 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoListApp.WebApp.Models;
 
 namespace TodoListApp.WebApp.Controllers;
 
+[Route("Home")]
 public class HomeController : Controller
 {
     private readonly ToDoContext context;
+    private readonly SignInManager<IdentityUser> signInManager;
 
-    public HomeController(ToDoContext ctx)
+    public HomeController(ToDoContext ctx, SignInManager<IdentityUser> signInManager)
     {
         this.context = ctx;
+        this.signInManager = signInManager;
     }
 
-    public IActionResult Index(string id)
+    [Route("Index")]
+    public IActionResult Index()
+    {
+        if (signInManager.IsSignedIn(User))
+        {
+            ViewData["IsAuthenticated"] = true;
+            ViewData["Username"] = User.Identity.Name;
+        }
+        else
+        {
+            ViewData["IsAuthenticated"] = false;
+        }
+
+        return View(context.ToDos);
+    }
+
+    //public async Task<IActionResult> 3Index()
+    //{
+    //    var client = clientFactory.CreateClient("ToDoAPI");
+    //    var response = await client.GetAsync("ToDo");
+    //    if (response.IsSuccessStatusCode)
+    //    {
+    //        var toDos = await response.Content.ReadFromJsonAsync<IEnumerable<ToDo>>();
+    //        return View(toDos);
+    //    }
+    //    return View(new List<ToDo>());
+    //}
+
+    public IActionResult Index1(string id)
     {
         var filters = new TaskFilters(id);
         this.ViewBag.TaskFilters = filters;
