@@ -1,73 +1,37 @@
-<h1>HI</h1>
+@model IEnumerable<TodoListApp.WebApp.Models.ViewModels.ToDoViewModel>
 
+@{
+    ViewData["Title"] = "Index";
+}
 
+<h1>Index</h1>
 
-@* @model IEnumerable<ToDo>
-
-    <div class="row">
-        <div class="col-md-2">
-            <form asp-action="Filter" method="post">
-                <div class="mb-3">
-                    <label class="form_label">Category</label>
-                    <select name="filter" class="form-select"
-                        asp-items="@(new SelectList(ViewBag.Categories, "CategoryId", "Name", ViewBag.TaskFilters.CategoryId))">
-                    <option value="all">All</option>
-                </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form_label">Due</label>
-                    <select name="filter" class="form-select"
-                            asp-items="@(new SelectList(ViewBag.DueFilters, "Key", "Value", ViewBag.TaskFilters.Due))">
-                        <option value="all">All</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form_label">Status</label>
-                    <select name="filter" class="form-select"
-                            asp-items="@(new SelectList(ViewBag.Statuses, "StatusId", "Name", ViewBag.TaskFilters.StatusId))">
-                        <option value="all">All</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Filter</button>
-                <a asp-action="Index" asp-route-id = "" class="btn btn-primary">Clear</a>
-            </form>
-        </div>
-        <div class="col-md-10">
-            <form asp-action="MarkComplete" method="post" asp-route-id ="@ViewBag.TaskFilters.FilterString">
-                <table class="table table-bordered table-striped mt-2">
-                    <thead>
-                        <tr>
-                        <th>Description</th>
-                        <th>Category</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                        <th class="w-25"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach(ToDo task in Model)
-                        {
-                        string overdue = task.Overdue ? "bg-warning" : "";
-                        <tr>
-                            <td>@task.Description</td>
-                            <td>@task.Category.Name</td>
-                            <td class="@overdue">@task.DueDate?.ToShortDateString()</td>
-                            <td class="@overdue">@task.Status.Name</td>
-                            <td>
-                                @if (task.StatusId == "open")
-                                {
-                                    <button type="submit" class="btn btn-primary btn-sm"
-                                    name="@nameof(ToDo.ToDoId)" value="@task.ToDoId">Mark Completed</button>
-                                }
-                            </td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            </form>
-            <form asp-action="DeleteComplete" method="post" asp-route-id="@ViewBag.TaskFilters.FilterString">
-                <a asp-action="Add" class="btn btn-primary">Add new task</a>
-                <button type="submit" class="btn btn-primary">Delete completed tasks</button>
-            </form>
-        </div>
-    </div> *@
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ToDoId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Overdue)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.ToDoId)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.DueDate)</td>
+                <td>@Html.DisplayFor(modelItem => item.Overdue)</td>
+            </tr>
+        }
+    </tbody>
+</table>

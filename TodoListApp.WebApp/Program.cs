@@ -7,19 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<ToDoContext>(opts =>
-{
-    opts.UseSqlServer(builder.Configuration["ConnectionStrings:TodoListDb"]);
-});
 
 builder.Services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(builder.Configuration["ConnectionStrings:UsersDb"]));
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>();
-
-builder.Services.AddHttpClient("ToDoAPI", client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7184/api/");
-});
-
 
 var app = builder.Build();
 
