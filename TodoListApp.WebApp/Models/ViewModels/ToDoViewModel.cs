@@ -6,14 +6,10 @@ namespace TodoListApp.WebApp.Models.ViewModels;
 
 public class ToDoViewModel
 {
-    [Key]
     public int ToDoId { get; set; }
-
-    [Required(ErrorMessage = "Please enter a description.")]
-    public string Description { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "Please enter a due time.")]
-    public DateTime? DueDate { get; set; }
-
-    public bool Overdue => this.DueDate < DateTime.Today;
+    public string? Description { get; set; }
+    public DateTime DueDate { get; set; }
+    public string? Category { get; set; }
+    public string? Status { get; set; }
+    public bool Overdue { get; set; }
 }

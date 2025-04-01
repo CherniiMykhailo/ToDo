@@ -1,3 +1,5 @@
+using System.Net.Http;
+using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,13 +38,13 @@ public class HomeController : Controller
             ViewData["IsAuthenticated"] = false;
         }
 
-        List<ToDoViewModel> list = new List<ToDoViewModel>();
-        HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/ToDo").Result;
+        List<ListToDoViewModel> list = new List<ListToDoViewModel>();
+        HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/TodoList").Result;
 
         if (response.IsSuccessStatusCode)
         {
             string data = response.Content.ReadAsStringAsync().Result;
-            list = JsonConvert.DeserializeObject<List<ToDoViewModel>>(data);
+            list = JsonConvert.DeserializeObject<List<ListToDoViewModel>>(data);
         }
         return View(list);
     }

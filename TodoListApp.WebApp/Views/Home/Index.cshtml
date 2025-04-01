@@ -1,37 +1,71 @@
-@model IEnumerable<TodoListApp.WebApp.Models.ViewModels.ToDoViewModel>
+@model IEnumerable<TodoListApp.WebApp.Models.ViewModels.ListToDoViewModel>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<h1>My Tasks</h1>
 
-<h1>Index</h1>
+<!-- Форма для додавання нового списку -->
+<form asp-action="CreateToDoList" method="post" class="mb-4 d-flex">
+    <input type="text" name="Name" class="form-control me-2" placeholder="Enter list name" required>
+    <button type="submit" class="btn btn-success">Add New List</button>
+</form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ToDoId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DueDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Overdue)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.ToDoId)</td>
-                <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                <td>@Html.DisplayFor(modelItem => item.DueDate)</td>
-                <td>@Html.DisplayFor(modelItem => item.Overdue)</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div id="listsContainer">
+    @foreach (var list in Model)
+    {
+        <div class="list-container mb-4">
+            <div class="d-flex align-items-center">
+                <!-- Кнопка для відкриття конкретного списку -->
+                <button class="btn btn-primary mb-2 flex-grow-1 text-start" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#tasks-@list.ListId"
+                        aria-expanded="false" aria-controls="tasks-@list.ListId">
+                    @list.Name
+                </button>
+
+                <!-- Кнопки редагування та видалення в одному рядку -->
+                <div class="ms-2 d-flex">
+                    <a asp-action="EditToDoList" asp-route-id="@list.ListId" class="btn btn-warning btn-sm me-1">✏️</a>
+                    <form asp-action="DeleteToDoList" method="post">
+                        <input type="hidden" name="id" value="@list.ListId">
+                        <button type="submit" class="btn btn-danger btn-sm">❌</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="tasks-@list.ListId" class="collapse">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Description</th>
+                            <th>Due Date</th>
+                            <th>Overdue</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in list.ToDos)
+                        {
+                            <tr>
+                                <td>@item.ToDoId</td>
+                                <td>@item.Description</td>
+                                <td>@item.DueDate.ToString("yyyy-MM-dd")</td>
+                                <td>@(item.Overdue ? "Yes" : "No")</td>
+                                <td>
+                                    <!-- Кнопки дій для завдання -->
+                                    <a asp-action="EditTask" asp-route-id="@item.ToDoId" class="btn btn-warning btn-sm">✏️</a>
+                                    <a asp-action="TaskDetails" asp-route-id="@item.ToDoId" class="btn btn-info btn-sm">ℹ️</a>
+                                    <form asp-action="DeleteTask" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@item.ToDoId">
+                                        <button type="submit" class="btn btn-danger btn-sm">❌</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Кнопка для додавання нового завдання -->
+                <a asp-action="CreateTask" asp-route-listId="@list.ListId" class="btn btn-success mt-2">Add New Task</a>
+            </div>
+        </div>
+    }
+</div>
