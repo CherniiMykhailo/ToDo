@@ -15,9 +15,6 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <span class="me-3">Welcome, <strong>@User.Identity.Name</strong></span>
-                        <form action="/Account/Logout" method="post" class="d-inline">
-                            <button class="btn btn-danger btn-sm" type="submit">Logout</button>
-                        </form>
                     }
                     else
                     {
@@ -32,11 +29,26 @@
         <div class="col-md-3">
             <ul class="list-group">
                 <li class="list-group-item">
-                    <a href="/home/index" class="text-decoration-none">Home</a>
+                    <a href="/home/index" class="text-decoration-none">List of tasks</a>
                 </li>
                 <li class="list-group-item">
-                    <a href="/About/index" class="text-decoration-none">About</a>
+                    <a href="/About/index" class="text-decoration-none">To-do lists</a>
                 </li>
+                <li class="list-group-item">
+                    <a href="/home/index" class="text-decoration-none">Tags</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/home/index" class="text-decoration-none">Assigned tasks</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/home/index" class="text-decoration-none">Search</a>
+                </li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="list-group-item">
+                        <a href="/Account/Logout" class="text-decoration-none">Sign out</a>
+                    </li>
+                }
             </ul>
         </div>
         <div class="col-md-9">

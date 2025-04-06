@@ -25,6 +25,21 @@ public class TodoListController : Controller
         return Ok(toDoLists);
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetToDoListById(int id)
+    {
+        var toDoList = await context.ToDoLists
+            .Include(t => t.ToDos)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (toDoList == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(toDoList);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateToDoList([FromBody] ToDoListDTO newList)
     {
@@ -33,11 +48,16 @@ public class TodoListController : Controller
             return BadRequest(ModelState);
         }
 
+        var exists = await context.ToDoLists.AnyAsync(t => t.Name == newList.Name);
+        if (exists)
+        {
+            return BadRequest("A list with this name already exists.");
+        }
+
         var toDoListEntity = new ToDoList
         {
             Id = newList.Id,
-            Name = newList.Name,
-            Description = newList.Description
+            Name = newList.Name
         };
 
         context.ToDoLists.Add(toDoListEntity);
@@ -47,7 +67,7 @@ public class TodoListController : Controller
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteToDoList(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         var toDoList = await context.ToDoLists.FindAsync(id);
         if (toDoList == null)

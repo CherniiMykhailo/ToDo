@@ -1,0 +1,15 @@
+@model TodoListApp.WebApp.Models.ViewModels.ListToDoViewModel
+
+<h2>Edit ToDo List</h2>
+
+<form asp-action="Edit" asp-controller="List" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label class="form-label">List Name</label>
+        <input asp-for="Name" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="/Home/Index" class="btn btn-secondary">Back</a>
+</form>
