@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TodoListApp.WebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,6 +38,20 @@ namespace TodoListApp.WebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ToDoLists",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ToDoLists", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ToDos",
                 columns: table => new
                 {
@@ -46,7 +60,8 @@ namespace TodoListApp.WebApi.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    StatusId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    StatusId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ToDoListId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -62,6 +77,12 @@ namespace TodoListApp.WebApi.Migrations
                         column: x => x.StatusId,
                         principalTable: "Statuses",
                         principalColumn: "StatusId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ToDos_ToDoLists_ToDoListId",
+                        column: x => x.ToDoListId,
+                        principalTable: "ToDoLists",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -95,6 +116,11 @@ namespace TodoListApp.WebApi.Migrations
                 name: "IX_ToDos_StatusId",
                 table: "ToDos",
                 column: "StatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ToDos_ToDoListId",
+                table: "ToDos",
+                column: "ToDoListId");
         }
 
         /// <inheritdoc />
@@ -108,6 +134,9 @@ namespace TodoListApp.WebApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "Statuses");
+
+            migrationBuilder.DropTable(
+                name: "ToDoLists");
         }
     }
 }

@@ -1,15 +1,56 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace TodoListApp.WebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class updateList : Migration
+    public partial class ForceMakeToDoListNullable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterColumn<int>(
+                name: "ToDoListId",
+                table: "ToDos",
+                type: "int",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_ToDos_ToDoLists_ToDoListId",
+                table: "ToDos");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "ToDoListId",
+                table: "ToDos",
+                type: "int",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ToDos_ToDoLists_ToDoListId",
+                table: "ToDos",
+                column: "ToDoListId",
+                principalTable: "ToDoLists",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AlterColumn<int>(
+                name: "ToDoListId",
+                table: "ToDos",
+                type: "int",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "int",
+                oldNullable: true);
+
             migrationBuilder.DropForeignKey(
                 name: "FK_ToDos_ToDoLists_ToDoListId",
                 table: "ToDos");
@@ -29,31 +70,8 @@ namespace TodoListApp.WebApi.Migrations
                 table: "ToDos",
                 column: "ToDoListId",
                 principalTable: "ToDoLists",
-                principalColumn: "ToDoListId",
+                principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropForeignKey(
-                name: "FK_ToDos_ToDoLists_ToDoListId",
-                table: "ToDos");
-
-            migrationBuilder.AlterColumn<int>(
-                name: "ToDoListId",
-                table: "ToDos",
-                type: "int",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ToDos_ToDoLists_ToDoListId",
-                table: "ToDos",
-                column: "ToDoListId",
-                principalTable: "ToDoLists",
-                principalColumn: "ToDoListId");
         }
     }
 }

@@ -94,7 +94,6 @@ public class ListController : Controller
             var errorMessage = await response.Content.ReadAsStringAsync();
             ModelState.AddModelError("", errorMessage);
 
-            // Повторно дістаємо список, щоб не було помилки в Index
             var listResponse = await _client.GetAsync("/api/TodoList");
             if (listResponse.IsSuccessStatusCode)
             {

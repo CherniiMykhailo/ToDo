@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace TodoListApp.WebApi.Models
@@ -7,6 +8,7 @@ namespace TodoListApp.WebApi.Models
         public string StatusId { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         [ValidateNever]
+        [JsonIgnore]
         public ICollection<ToDo> ToDos { get; set; } = [];
     }
 }

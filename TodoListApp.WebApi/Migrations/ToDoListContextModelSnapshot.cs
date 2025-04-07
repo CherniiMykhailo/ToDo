@@ -112,7 +112,7 @@ namespace TodoListApp.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ToDoListId")
+                    b.Property<int?>("ToDoListId")
                         .HasColumnType("int");
 
                     b.HasKey("ToDoId");
@@ -163,8 +163,7 @@ namespace TodoListApp.WebApi.Migrations
                     b.HasOne("TodoListApp.WebApi.Models.ToDoList", "ToDoList")
                         .WithMany("ToDos")
                         .HasForeignKey("ToDoListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Category");
 

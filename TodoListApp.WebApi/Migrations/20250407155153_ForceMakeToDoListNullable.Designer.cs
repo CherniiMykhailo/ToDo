@@ -12,8 +12,8 @@ using TodoListApp.WebApi.Models;
 namespace TodoListApp.WebApi.Migrations
 {
     [DbContext(typeof(ToDoListContext))]
-    [Migration("20250321104927_InitialCreateApp")]
-    partial class InitialCreateApp
+    [Migration("20250407155153_ForceMakeToDoListNullable")]
+    partial class ForceMakeToDoListNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,32 +115,79 @@ namespace TodoListApp.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int?>("ToDoListId")
+                        .HasColumnType("int");
+
                     b.HasKey("ToDoId");
 
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("StatusId");
 
+                    b.HasIndex("ToDoListId");
+
                     b.ToTable("ToDos");
+                });
+
+            modelBuilder.Entity("TodoListApp.WebApi.Models.ToDoList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ToDoLists");
                 });
 
             modelBuilder.Entity("TodoListApp.WebApi.Models.ToDo", b =>
                 {
                     b.HasOne("TodoListApp.WebApi.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("ToDos")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TodoListApp.WebApi.Models.Status", "Status")
-                        .WithMany()
+                        .WithMany("ToDos")
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TodoListApp.WebApi.Models.ToDoList", "ToDoList")
+                        .WithMany("ToDos")
+                        .HasForeignKey("ToDoListId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Category");
 
                     b.Navigation("Status");
+
+                    b.Navigation("ToDoList");
+                });
+
+            modelBuilder.Entity("TodoListApp.WebApi.Models.Category", b =>
+                {
+                    b.Navigation("ToDos");
+                });
+
+            modelBuilder.Entity("TodoListApp.WebApi.Models.Status", b =>
+                {
+                    b.Navigation("ToDos");
+                });
+
+            modelBuilder.Entity("TodoListApp.WebApi.Models.ToDoList", b =>
+                {
+                    b.Navigation("ToDos");
                 });
 #pragma warning restore 612, 618
         }

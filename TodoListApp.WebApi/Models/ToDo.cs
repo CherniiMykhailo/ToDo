@@ -27,11 +27,8 @@ namespace TodoListApp.WebApi.Models
         [JsonIgnore]
         public Status Status { get; set; } = null!;
 
-        [Required(ErrorMessage = "Please enter a ToDoList ID.")]
-        public int ToDoListId { get; set; }
-
-        [JsonIgnore]
-        public ToDoList ToDoList { get; set; } = null!;
+        public int? ToDoListId { get; set; }
+        public ToDoList? ToDoList { get; set; }
 
         public bool Overdue => this.StatusId == "open" && this.DueDate < DateTime.Today;
     }

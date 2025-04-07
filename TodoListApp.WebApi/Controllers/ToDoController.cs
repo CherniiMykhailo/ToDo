@@ -34,7 +34,7 @@ public class ToDoController : Controller
     }
 
 
-    [HttpGet("tasks/{id}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetTaskDetails(int id)
     {
         var task = await context.ToDos
@@ -78,13 +78,13 @@ public class ToDoController : Controller
                     DueDate = toDo.DueDate,
                     StatusId = toDo.StatusId,
                     CategoryId = toDo.CategoryId,
-                    ToDoListId = toDo.ToDoListId
+                    ToDoListId = toDo.ToDoListId,
                 };
 
                 this.context.ToDos.Add(toDoEntity);
                 await context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetTaskDetails), new { id = toDoEntity.ToDoId }, toDoEntity);
+                return Ok(toDoEntity);
             }
 
             return BadRequest(ModelState);
@@ -112,7 +112,7 @@ public class ToDoController : Controller
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] ToDo updatedToDo)
+    public async Task<IActionResult> Update(int id, [FromBody] ToDoDTO updatedToDo)
     {
         var existingToDo = await context.ToDos
             .Include(t => t.Category)

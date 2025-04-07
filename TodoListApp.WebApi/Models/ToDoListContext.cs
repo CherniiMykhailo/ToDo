@@ -19,7 +19,7 @@ namespace TodoListApp.WebApi.Models
             .HasOne(t => t.ToDoList)
             .WithMany(tl => tl.ToDos)
             .HasForeignKey(t => t.ToDoListId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
             _ = modelBuilder.Entity<Category>().HasData(
                         new Category { CategoryId = "work", Name = "Work" },

@@ -12,8 +12,8 @@ using TodoListApp.WebApi.Models;
 namespace TodoListApp.WebApi.Migrations
 {
     [DbContext(typeof(ToDoListContext))]
-    [Migration("20250323155550_updateList")]
-    partial class updateList
+    [Migration("20250407154259_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -131,11 +131,11 @@ namespace TodoListApp.WebApi.Migrations
 
             modelBuilder.Entity("TodoListApp.WebApi.Models.ToDoList", b =>
                 {
-                    b.Property<int>("ToDoListId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ToDoListId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -144,7 +144,7 @@ namespace TodoListApp.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ToDoListId");
+                    b.HasKey("Id");
 
                     b.ToTable("ToDoLists");
                 });
