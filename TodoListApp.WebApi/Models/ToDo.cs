@@ -28,6 +28,8 @@ namespace TodoListApp.WebApi.Models
         public Status Status { get; set; } = null!;
 
         public int? ToDoListId { get; set; }
+
+        [JsonIgnore]
         public ToDoList? ToDoList { get; set; }
 
         public bool Overdue => this.StatusId == "open" && this.DueDate < DateTime.Today;
