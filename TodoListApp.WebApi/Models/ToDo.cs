@@ -35,6 +35,7 @@ namespace TodoListApp.WebApi.Models
         public bool Overdue => this.StatusId == "open" && this.DueDate < DateTime.Today;
 
         public string? CreatedBy { get; set; }
-    }
 
+        public string? AssignedTo { get; set; }
+    }
 }

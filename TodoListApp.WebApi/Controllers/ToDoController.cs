@@ -33,6 +33,15 @@ public class ToDoController : Controller
         return Ok(toDo);
     }
 
+    [HttpGet("assigned/{userName}")]
+    public async Task<IActionResult> GetTasksAssignedTo(string userName)
+    {
+        var tasks = await context.ToDos
+            .Where(t => t.AssignedTo == userName)
+            .ToListAsync();
+
+        return Ok(tasks);
+    }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTaskDetails(int id)
@@ -80,6 +89,7 @@ public class ToDoController : Controller
                     CategoryId = toDo.CategoryId,
                     ToDoListId = toDo.ToDoListId,
                     CreatedBy = toDo.CreatedBy,
+                    AssignedTo = toDo.AssignedTo,
                 };
 
                 this.context.ToDos.Add(toDoEntity);

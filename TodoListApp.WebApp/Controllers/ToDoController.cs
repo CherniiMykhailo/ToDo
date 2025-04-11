@@ -127,6 +127,7 @@ public class ToDoController : Controller
             DueDate = model.DueDate,
             CategoryId = model.CategoryId,
             StatusId = model.StatusId,
+            AssignedTo = model.AssignedTo ?? currentUser,
             Overdue = model.DueDate < DateTime.Today,
             ToDoListId = model.TodoListId,
             CreatedBy = currentUser,
@@ -153,7 +154,7 @@ public class ToDoController : Controller
             return View("Index", new List<ToDoViewModel>());
         }
 
-            if (response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
         {
             return RedirectToAction("Index", "ToDo");
         }

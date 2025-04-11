@@ -14,5 +14,6 @@ public class ToDoViewModel
     public string StatusId { get; set; }
     public int? TodoListId { get; set; }
     public string? CreatedBy { get; set; }
+    public string? AssignedTo { get; set; }
     public bool Overdue { get; set; }
 }
