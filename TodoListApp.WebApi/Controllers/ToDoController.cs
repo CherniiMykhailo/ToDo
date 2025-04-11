@@ -72,8 +72,6 @@ public class ToDoController : Controller
 
             if (ModelState.IsValid)
             {
-                var currentUser = User.Identity?.Name ?? "Unknown User";
-
                 var toDoEntity = new ToDo
                 {
                     Description = toDo.Description,
@@ -81,7 +79,7 @@ public class ToDoController : Controller
                     StatusId = toDo.StatusId,
                     CategoryId = toDo.CategoryId,
                     ToDoListId = toDo.ToDoListId,
-                    CreatedBy = currentUser,
+                    CreatedBy = toDo.CreatedBy,
                 };
 
                 this.context.ToDos.Add(toDoEntity);

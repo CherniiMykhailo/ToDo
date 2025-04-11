@@ -117,6 +117,9 @@ public class ToDoController : Controller
     [Route("Create")]
     public async Task<IActionResult> Create(ToDoViewModel model)
     {
+        var currentUser = this.User.Identity?.Name ?? "Guest";
+
+
         var strippedModel = new
         {
             ToDoId = model.ToDoId,
@@ -126,6 +129,7 @@ public class ToDoController : Controller
             StatusId = model.StatusId,
             Overdue = model.DueDate < DateTime.Today,
             ToDoListId = model.TodoListId,
+            CreatedBy = currentUser,
         };
 
         var json = JsonConvert.SerializeObject(strippedModel);

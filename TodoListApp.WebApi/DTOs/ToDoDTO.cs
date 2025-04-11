@@ -12,4 +12,5 @@ public class ToDoDTO
     public string StatusId { get; set; }
     public int? ToDoListId { get; set; }
     public bool Overdue { get; set; }
+    public string? CreatedBy { get; set; }
 }
