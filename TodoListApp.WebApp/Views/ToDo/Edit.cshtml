@@ -11,11 +11,16 @@
     </div>
 
     <div class="mb-3">
+        <label class="form-label">Due Date</label>
+        <input asp-for="DueDate" type="date" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
         <label class="form-label">Category</label>
         <select asp-for="CategoryId" class="form-select">
             <option value="work">Work</option>
             <option value="home">Home</option>
-            <option value="ex">Exercise</option>
+            <option value="exercise">Exercise</option>
             <option value="shop">Shopping</option>
             <option value="call">Contact</option>
         </select>

@@ -43,6 +43,17 @@ public class ToDoController : Controller
         return Ok(tasks);
     }
 
+    [HttpGet("category/{category}")]
+    public async Task<IActionResult> GetFilteredTasks(string category)
+    {
+        var tasks = await context.ToDos
+            .Include(t => t.Category)
+            .Where(t => t.Category.Name == category)
+            .ToListAsync();
+
+        return Ok(tasks);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTaskDetails(int id)
     {

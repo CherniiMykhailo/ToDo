@@ -1,48 +1,25 @@
 @model IEnumerable<TodoListApp.WebApp.Models.ViewModels.ToDoViewModel>
 
-<h1 class="mb-4">All Tasks</h1>
+@{
+    var categories = new List<string> { "Work", "Home", "Exercise", "Shopping", "Contact" };
+}
 
-<form asp-controller="ToDo" asp-action="Create" method="post" class="row g-2 align-items-end mb-4">
-    <div class="col-md-3">
-        <input type="text" name="Description" class="form-control form-control-sm" placeholder="Task description" required />
-    </div>
-    <div class="col-md-2">
-        <input type="date" name="DueDate" class="form-control form-control-sm" required />
-    </div>
-    <div class="col-md-2">
-        <select name="CategoryId" class="form-select form-select-sm">
-            <option value="" disabled selected>Select Category</option>
-            <option value="work">Work</option>
-            <option value="home">Home</option>
-            <option value="exercise">Exercise</option>
-            <option value="shop">Shopping</option>
-            <option value="call">Contact</option>
-        </select>
-    </div>
-    <div class="col-md-2">
-        <select name="StatusId" class="form-select form-select-sm">
-            <option value="" disabled selected>Select Status</option>
-            <option value="open">Open</option>
-            <option value="closed">Completed</option>
-        </select>
-    </div>
-    <div class="col-md-2">
-        <input type="text" name="AssignedTo" class="form-control form-control-sm" placeholder="Asigned To" required />
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-success btn-sm">Add Task</button>
+<h2>Filter by Category</h2>
+
+<form method="get" action="/Category/Index">
+    <select name="category" class="form-select">
+        <option value="">All</option>
+        @foreach (var category in categories)
+        {
+            <option value="@category">@category</option>
+        }
+    </select>
+    <div class="col-auto mt-2">
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
     </div>
 </form>
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger mt-3">
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <div>@error.ErrorMessage</div>
-        }
-    </div>
-}
+<h2>Tasks</h2>
 
 <table class="table table-hover table-bordered align-middle">
     <thead class="table-light">

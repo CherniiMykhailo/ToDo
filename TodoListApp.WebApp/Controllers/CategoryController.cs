@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using TodoListApp.WebApi.Models;
 using TodoListApp.WebApp.Models.ViewModels;
-using TodoListApp.WebApp.Models;
 
 namespace TodoListApp.WebApp.Controllers;
 
-[Route("Assign")]
-public class AssignController : Controller
+[Route("Category")]
+public class CategoryController : Controller
 {
     private readonly SignInManager<IdentityUser> signInManager;
     Uri baseAdress = new Uri("https://localhost:5001/api");
     private readonly HttpClient _client;
 
-    public AssignController(SignInManager<IdentityUser> signInManager)
+    public CategoryController(SignInManager<IdentityUser> signInManager)
     {
         this.signInManager = signInManager;
         _client = new HttpClient();
@@ -21,7 +21,7 @@ public class AssignController : Controller
     }
 
     [Route("Index")]
-    public IActionResult Index()
+    public IActionResult Index(string? category)
     {
         if (signInManager.IsSignedIn(User))
         {
@@ -34,7 +34,18 @@ public class AssignController : Controller
         }
 
         List<ToDoViewModel> list = new List<ToDoViewModel>();
-        HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + $"/ToDo/assigned/{User.Identity.Name}").Result;
+        string endpoint;
+
+        if (string.IsNullOrEmpty(category))
+        {
+            endpoint = "/ToDo";
+        }
+        else
+        {
+            endpoint = $"/ToDo/category/{category}";
+        }
+        HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + endpoint).Result;
+
 
         if (response.IsSuccessStatusCode)
         {
