@@ -48,6 +48,7 @@
             <th>Due Date</th>
             <th>Category</th>
             <th>Status</th>
+            <th>CreatedBy</th>
             <th>Overdue</th>
             <th class="text-center">Actions</th>
         </tr>
@@ -60,6 +61,7 @@
                 <td>@task.DueDate.ToShortDateString()</td>
                 <td>@task.CategoryId</td>
                 <td>@task.StatusId</td>
+                <td>@task.CreatedBy</td>
                 <td>
                     @if (task.Overdue)
                     {

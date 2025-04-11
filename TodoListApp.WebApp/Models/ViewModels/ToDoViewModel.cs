@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace TodoListApp.WebApp.Models.ViewModels;
 
@@ -12,5 +13,6 @@ public class ToDoViewModel
     public string CategoryId { get; set; }
     public string StatusId { get; set; }
     public int? TodoListId { get; set; }
+    public string? CreatedBy { get; set; }
     public bool Overdue { get; set; }
 }

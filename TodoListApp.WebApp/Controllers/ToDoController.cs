@@ -149,7 +149,7 @@ public class ToDoController : Controller
             return View("Index", new List<ToDoViewModel>());
         }
 
-        if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
         {
             return RedirectToAction("Index", "ToDo");
         }
