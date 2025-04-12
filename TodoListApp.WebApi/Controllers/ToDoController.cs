@@ -19,7 +19,7 @@ public class ToDoController : Controller
         this.context = context;
     }
 
-    [HttpGet("{listId}/tasks")]
+    [HttpGet("tasks/{listId}")]
     public async Task<IActionResult> GetTasksByListId(int listId)
     {
         var tasks = await context.ToDos.Where(t => t.ToDoListId == listId).ToListAsync();

@@ -28,7 +28,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/", () => Results.Redirect("/Home/Index"));
+app.MapGet("/", () => Results.Redirect("/Assign/Index"));
 
 app.MapControllerRoute(
     name: "default",

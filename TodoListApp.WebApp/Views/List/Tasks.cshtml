@@ -1,0 +1,92 @@
+@model IEnumerable<TodoListApp.WebApp.Models.ViewModels.ToDoViewModel>
+
+<h1 class="mb-4">Tasks of @ViewBag.ListName</h1>
+
+<form asp-controller="ToDo" asp-action="Create" method="post" class="row g-2 align-items-end mb-4">
+    <div class="col-md-3">
+        <input type="text" name="Description" class="form-control form-control-sm" placeholder="Task description" required />
+    </div>
+    <div class="col-md-2">
+        <input type="date" name="DueDate" class="form-control form-control-sm" required />
+    </div>
+    <div class="col-md-2">
+        <select name="CategoryId" class="form-select form-select-sm" required>
+            <option value="" disabled selected>Select Category</option>
+            <option value="work">Work</option>
+            <option value="home">Home</option>
+            <option value="exercise">Exercise</option>
+            <option value="shop">Shopping</option>
+            <option value="call">Contact</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="StatusId" class="form-select form-select-sm" required>
+            <option value="" disabled selected>Select Status</option>
+            <option value="open">Open</option>
+            <option value="closed">Completed</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <input type="text" name="AssignedTo" class="form-control form-control-sm" placeholder="Assigned To" required />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-success btn-sm">Add Task</button>
+    </div>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-3">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
+
+<table class="table table-hover table-bordered align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>Description</th>
+            <th>Due Date</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Assigned to</th>
+            <th>Created by</th>
+            <th>Overdue</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in Model)
+        {
+            <tr id="todo-@task.ToDoId">
+                <td>@task.Description</td>
+                <td>@task.DueDate.ToShortDateString()</td>
+                <td>@task.CategoryId</td>
+                <td>@task.StatusId</td>
+                <td>@task.AssignedTo</td>
+                <td>@task.CreatedBy</td>
+                <td>
+                    @if (task.Overdue)
+                    {
+                        <span class="badge bg-danger">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">No</span>
+                    }
+                </td>
+                <td class="text-center">
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="@Url.Action("Edit", "ToDo", new { id = task.ToDoId })" class="btn btn-info btn-sm">Edit</a>
+                        <form asp-controller="ToDo" asp-action="Delete" method="post" onsubmit="return confirm('Are you sure you want to delete this task?');">
+                            <input type="hidden" name="id" value="@task.ToDoId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

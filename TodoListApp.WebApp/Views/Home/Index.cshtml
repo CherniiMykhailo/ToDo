@@ -33,7 +33,9 @@
         @foreach (var list in Model)
         {
             <tr id="list-@list.Id">
-                <td>@list.Name</td>
+                <td>
+                    <a href="@Url.Action("Tasks", "List", new { id = list.Id })" class="text-decoration-none">@list.Name</a>
+                </td>
                 <td class="text-center">@(list.ToDos?.Count() ?? 0)</td>
                 <td class="text-center">
                     <div class="d-flex justify-content-center gap-2">

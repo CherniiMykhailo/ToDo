@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,33 @@ public class ListController : Controller
     {
         _client = new HttpClient();
         _client.BaseAddress = baseAdress;
+    }
+
+    [Route("Tasks")]
+    [HttpGet("Tasks/{id}")]
+    public IActionResult Tasks(int id)
+    {
+        List<ToDoViewModel> list = new List<ToDoViewModel>();
+        HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + $"/ToDo/tasks/{id}").Result;
+
+        if (response.IsSuccessStatusCode)
+        {
+            string data = response.Content.ReadAsStringAsync().Result;
+            list = JsonConvert.DeserializeObject<List<ToDoViewModel>>(data);
+        }
+
+        HttpResponseMessage listResponse = _client.GetAsync(_client.BaseAddress + $"/ToDoList/{id}").Result;
+
+        if (listResponse.IsSuccessStatusCode)
+        {
+            string listData = listResponse.Content.ReadAsStringAsync().Result;
+            var listInfo = JsonConvert.DeserializeObject<ListToDoViewModel>(listData);
+            ViewBag.ListName = listInfo?.Name;
+        }
+
+        ViewBag.ListId = id;
+
+        return View(list);
     }
 
     [Route("Edit")]
@@ -89,21 +117,21 @@ public class ListController : Controller
 
         var response = await _client.PostAsync("/api/TodoList", content);
 
-        if (response.StatusCode == HttpStatusCode.BadRequest)
-        {
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            ModelState.AddModelError("", errorMessage);
+        //if (response.StatusCode == HttpStatusCode.BadRequest)
+        //{
+        //    var errorMessage = await response.Content.ReadAsStringAsync();
+        //    ModelState.AddModelError("", errorMessage);
 
-            var listResponse = await _client.GetAsync("/api/TodoList");
-            if (listResponse.IsSuccessStatusCode)
-            {
-                var jsonData = await listResponse.Content.ReadAsStringAsync();
-                var lists = JsonConvert.DeserializeObject<List<ListToDoViewModel>>(jsonData);
-                return View("Index", lists);
-            }
+        //    var listResponse = await _client.GetAsync("/api/TodoList");
+        //    if (listResponse.IsSuccessStatusCode)
+        //    {
+        //        var jsonData = await listResponse.Content.ReadAsStringAsync();
+        //        var lists = JsonConvert.DeserializeObject<List<ListToDoViewModel>>(jsonData);
+        //        return View("Index", lists);
+        //    }
 
-            return View("Index", new List<ListToDoViewModel>());
-        }
+        //    return View("Index", new List<ListToDoViewModel>());
+        //}
 
         if (response.IsSuccessStatusCode)
         {
