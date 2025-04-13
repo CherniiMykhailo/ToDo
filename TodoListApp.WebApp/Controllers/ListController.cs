@@ -117,22 +117,6 @@ public class ListController : Controller
 
         var response = await _client.PostAsync("/api/TodoList", content);
 
-        //if (response.StatusCode == HttpStatusCode.BadRequest)
-        //{
-        //    var errorMessage = await response.Content.ReadAsStringAsync();
-        //    ModelState.AddModelError("", errorMessage);
-
-        //    var listResponse = await _client.GetAsync("/api/TodoList");
-        //    if (listResponse.IsSuccessStatusCode)
-        //    {
-        //        var jsonData = await listResponse.Content.ReadAsStringAsync();
-        //        var lists = JsonConvert.DeserializeObject<List<ListToDoViewModel>>(jsonData);
-        //        return View("Index", lists);
-        //    }
-
-        //    return View("Index", new List<ListToDoViewModel>());
-        //}
-
         if (response.IsSuccessStatusCode)
         {
             return RedirectToAction("Index", "Home");

@@ -91,26 +91,40 @@ public class ToDoController : Controller
 
         if (response.IsSuccessStatusCode)
         {
-            return RedirectToAction("Index", "ToDo");
+            if (model.TodoListId > 0)
+            {
+                return RedirectToAction("Tasks", "List", new { id = model.TodoListId });
+            }
+            return RedirectToAction("Index", "Assign");
         }
 
         ModelState.AddModelError("", "Failed to update the list.");
-        return View(model); // Повертає знову на форму з помилкою
+        return View(model);
     }
 
     [Route("Delete")]
     [HttpPost]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id, int? TodoListId)
     {
         var deleteResponse = await _client.DeleteAsync(_client.BaseAddress + $"/ToDo/{id}");
 
         if (deleteResponse.IsSuccessStatusCode)
         {
-            return RedirectToAction("Index", "ToDo");
+            // Якщо передано TodoListId, перенаправляємо на Tasks, інакше - на загальний список
+            if (TodoListId.HasValue)
+            {
+                return RedirectToAction("Tasks", "List", new { id = TodoListId.Value });
+            }
+            return RedirectToAction("Index", "Assign");
         }
 
+
         ModelState.AddModelError("", "Failed to delete the list.");
-        return RedirectToAction("Index", "ToDo");
+        if (TodoListId.HasValue)
+        {
+            return RedirectToAction("Tasks", "List", new { id = TodoListId.Value });
+        }
+        return RedirectToAction("Index", "Assign");
     }
 
     [HttpPost]
@@ -138,25 +152,13 @@ public class ToDoController : Controller
 
         var response = await _client.PostAsync("/api/ToDo", content);
 
-        if (response.StatusCode == HttpStatusCode.BadRequest)
-        {
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            ModelState.AddModelError("", errorMessage);
-
-            var listResponse = await _client.GetAsync("/api/ToDo");
-            if (listResponse.IsSuccessStatusCode)
-            {
-                var jsonData = await listResponse.Content.ReadAsStringAsync();
-                var lists = JsonConvert.DeserializeObject<List<ToDoViewModel>>(jsonData);
-                return View("Index", lists);
-            }
-
-            return View("Index", new List<ToDoViewModel>());
-        }
-
         if (response.IsSuccessStatusCode)
         {
-            return RedirectToAction("Index", "ToDo");
+            if (model.TodoListId > 0)
+            {
+                return RedirectToAction("Tasks", "List", new { id = model.TodoListId });
+            }
+            return RedirectToAction("Index", "Assign");
         }
 
         ModelState.AddModelError("", "Failed to create the list.");
