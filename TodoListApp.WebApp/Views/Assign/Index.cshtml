@@ -50,6 +50,7 @@
                         <a href="@Url.Action("Edit", "ToDo", new { id = task.ToDoId })" class="btn btn-info btn-sm">Edit</a>
                         <form asp-controller="ToDo" asp-action="Delete" method="post" onsubmit="return confirm('Are you sure you want to delete this task?');">
                             <input type="hidden" name="id" value="@task.ToDoId" />
+                            <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Assign")" />
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
                     </div>

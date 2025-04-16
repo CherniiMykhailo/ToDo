@@ -17,17 +17,16 @@ namespace TodoListApp.WebApp.Controllers;
 [Route("ToDo")]
 public class ToDoController : Controller
 {
-    private readonly AppIdentityDbContext context;
+
     private readonly SignInManager<IdentityUser> signInManager;
-    Uri baseAdress = new Uri("https://localhost:5001/api");
+    private readonly Uri baseAdress = new Uri("https://localhost:5001/api");
     private readonly HttpClient _client;
 
-    public ToDoController(AppIdentityDbContext ctx, SignInManager<IdentityUser> signInManager)
+    public ToDoController(SignInManager<IdentityUser> signInManager)
     {
-        this.context = ctx;
         this.signInManager = signInManager;
-        _client = new HttpClient();
-        _client.BaseAddress = baseAdress;
+        this._client = new HttpClient();
+        this._client.BaseAddress = baseAdress;
     }
 
     [Route("Index")]
@@ -104,18 +103,13 @@ public class ToDoController : Controller
 
     [Route("Delete")]
     [HttpPost]
-    public async Task<IActionResult> Delete(int id, int? TodoListId)
+    public async Task<IActionResult> Delete(int id, int? TodoListId, string? returnUrl)
     {
         var deleteResponse = await _client.DeleteAsync(_client.BaseAddress + $"/ToDo/{id}");
 
         if (deleteResponse.IsSuccessStatusCode)
         {
-            // Якщо передано TodoListId, перенаправляємо на Tasks, інакше - на загальний список
-            if (TodoListId.HasValue)
-            {
-                return RedirectToAction("Tasks", "List", new { id = TodoListId.Value });
-            }
-            return RedirectToAction("Index", "Assign");
+            return Redirect(returnUrl);
         }
 
 
@@ -154,11 +148,7 @@ public class ToDoController : Controller
 
         if (response.IsSuccessStatusCode)
         {
-            if (model.TodoListId > 0)
-            {
-                return RedirectToAction("Tasks", "List", new { id = model.TodoListId });
-            }
-            return RedirectToAction("Index", "Assign");
+            return Redirect(model.ReturnUrl);
         }
 
         ModelState.AddModelError("", "Failed to create the list.");

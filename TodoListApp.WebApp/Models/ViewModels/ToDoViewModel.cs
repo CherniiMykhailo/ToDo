@@ -16,4 +16,5 @@ public class ToDoViewModel
     public string? CreatedBy { get; set; }
     public string? AssignedTo { get; set; }
     public bool Overdue { get; set; }
+    public string? ReturnUrl { get; set; }
 }
