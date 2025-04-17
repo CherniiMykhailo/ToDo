@@ -19,39 +19,39 @@ public class TodoListController : Controller
     [HttpGet]
     public async Task<IActionResult> GetAllToDoLists()
     {
-        var toDoLists = await context.ToDoLists
+        var toDoLists = await this.context.ToDoLists
             .Include(t => t.ToDos)
             .ToListAsync();
-        return Ok(toDoLists);
+        return this.Ok(toDoLists);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetToDoListById(int id)
     {
-        var toDoList = await context.ToDoLists
+        var toDoList = await this.context.ToDoLists
             .Include(t => t.ToDos)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (toDoList == null)
         {
-            return NotFound();
+            return this.NotFound();
         }
 
-        return Ok(toDoList);
+        return this.Ok(toDoList);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateToDoList([FromBody] ToDoListDTO newList)
     {
-        if (!ModelState.IsValid)
+        if (!this.ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            return this.BadRequest(this.ModelState);
         }
 
-        var exists = await context.ToDoLists.AnyAsync(t => t.Name == newList.Name);
+        var exists = await this.context.ToDoLists.AnyAsync(t => t.Name == newList.Name);
         if (exists)
         {
-            return BadRequest("A list with this name already exists.");
+            return this.BadRequest("A list with this name already exists.");
         }
 
         var toDoListEntity = new ToDoList
@@ -60,41 +60,41 @@ public class TodoListController : Controller
             Name = newList.Name
         };
 
-        context.ToDoLists.Add(toDoListEntity);
-        await context.SaveChangesAsync();
+        _ = this.context.ToDoLists.Add(toDoListEntity);
+        _ = await this.context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetAllToDoLists), new { id = toDoListEntity.Id }, toDoListEntity);
+        return this.CreatedAtAction(nameof(GetAllToDoLists), new { id = toDoListEntity.Id }, toDoListEntity);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var toDoList = await context.ToDoLists.FindAsync(id);
+        var toDoList = await this.context.ToDoLists.FindAsync(id);
         if (toDoList == null)
         {
-            return NotFound();
+            return this.NotFound();
         }
 
-        context.ToDoLists.Remove(toDoList);
-        await context.SaveChangesAsync();
+        _ = this.context.ToDoLists.Remove(toDoList);
+        _ = await this.context.SaveChangesAsync();
 
-        return NoContent();
+        return this.NoContent();
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateToDoList(int id, [FromBody] ToDoList updatedList)
     {
-        var existingList = await context.ToDoLists.FindAsync(id);
+        var existingList = await this.context.ToDoLists.FindAsync(id);
         if (existingList == null)
         {
-            return NotFound();
+            return this.NotFound();
         }
 
         existingList.Name = updatedList.Name;
         existingList.Description = updatedList.Description;
 
-        await context.SaveChangesAsync();
+        _ = await this.context.SaveChangesAsync();
 
-        return Ok(existingList);
+        return this.Ok(existingList);
     }
 }

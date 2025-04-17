@@ -1,16 +1,8 @@
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using TodoListApp.WebApp.Models.ViewModels;
 using Newtonsoft.Json;
-using System.Net.Http;
 using System.Text;
-using NuGet.Protocol.Core.Types;
-using TodoListApp.WebApi.Models;
-using Microsoft.EntityFrameworkCore.Query;
-using System.Net;
-using Microsoft.VisualBasic;
 using Microsoft.AspNetCore.Identity;
-using TodoListApp.WebApp.Models;
 
 namespace TodoListApp.WebApp.Controllers;
 
@@ -32,42 +24,42 @@ public class ToDoController : Controller
     [Route("Index")]
     public IActionResult Index()
     {
-        if (signInManager.IsSignedIn(User))
+        if (this.signInManager.IsSignedIn(this.User))
         {
-            ViewData["IsAuthenticated"] = true;
-            ViewData["Username"] = User.Identity.Name;
+            this.ViewData["IsAuthenticated"] = true;
+            this.ViewData["Username"] = this.User.Identity.Name;
         }
         else
         {
-            ViewData["IsAuthenticated"] = false;
+            this.ViewData["IsAuthenticated"] = false;
         }
 
-        List<ToDoViewModel> list = new List<ToDoViewModel>();
-        HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/ToDo").Result;
+        List<ToDoViewModel> list = [];
+        HttpResponseMessage response = this._client.GetAsync(this._client.BaseAddress + "/ToDo").Result;
 
         if (response.IsSuccessStatusCode)
         {
             string data = response.Content.ReadAsStringAsync().Result;
             list = JsonConvert.DeserializeObject<List<ToDoViewModel>>(data);
         }
-        return View(list);
+        return this.View(list);
     }
 
     [Route("Edit")]
     [HttpGet("{id}")]
     public async Task<IActionResult> Edit(int id)
     {
-        HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/ToDo/{id}");
+        HttpResponseMessage response = await this._client.GetAsync(this._client.BaseAddress + $"/ToDo/{id}");
 
         if (!response.IsSuccessStatusCode)
         {
-            return NotFound();
+            return this.NotFound();
         }
 
         string data = await response.Content.ReadAsStringAsync();
         var list = JsonConvert.DeserializeObject<ToDoViewModel>(data);
 
-        return View(list);
+        return this.View(list);
     }
 
     [Route("Edit")]
@@ -86,39 +78,39 @@ public class ToDoController : Controller
         var json = JsonConvert.SerializeObject(strippedModel);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await _client.PutAsync(_client.BaseAddress + $"/ToDo/{model.ToDoId}", content);
+        var response = await this._client.PutAsync(this._client.BaseAddress + $"/ToDo/{model.ToDoId}", content);
 
         if (response.IsSuccessStatusCode)
         {
             if (model.TodoListId > 0)
             {
-                return RedirectToAction("Tasks", "List", new { id = model.TodoListId });
+                return this.RedirectToAction("Tasks", "List", new { id = model.TodoListId });
             }
-            return RedirectToAction("Index", "Assign");
+            return this.RedirectToAction("Index", "Assign");
         }
 
-        ModelState.AddModelError("", "Failed to update the list.");
-        return View(model);
+        this.ModelState.AddModelError("", "Failed to update the list.");
+        return this.View(model);
     }
 
     [Route("Delete")]
     [HttpPost]
     public async Task<IActionResult> Delete(int id, int? TodoListId, string? returnUrl)
     {
-        var deleteResponse = await _client.DeleteAsync(_client.BaseAddress + $"/ToDo/{id}");
+        var deleteResponse = await this._client.DeleteAsync(this._client.BaseAddress + $"/ToDo/{id}");
 
         if (deleteResponse.IsSuccessStatusCode)
         {
-            return Redirect(returnUrl);
+            return this.Redirect(returnUrl);
         }
 
 
-        ModelState.AddModelError("", "Failed to delete the list.");
+        this.ModelState.AddModelError("", "Failed to delete the list.");
         if (TodoListId.HasValue)
         {
-            return RedirectToAction("Tasks", "List", new { id = TodoListId.Value });
+            return this.RedirectToAction("Tasks", "List", new { id = TodoListId.Value });
         }
-        return RedirectToAction("Index", "Assign");
+        return this.RedirectToAction("Index", "Assign");
     }
 
     [HttpPost]
@@ -126,7 +118,6 @@ public class ToDoController : Controller
     public async Task<IActionResult> Create(ToDoViewModel model)
     {
         var currentUser = this.User.Identity?.Name ?? "Guest";
-
 
         var strippedModel = new
         {
@@ -144,14 +135,14 @@ public class ToDoController : Controller
         var json = JsonConvert.SerializeObject(strippedModel);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await _client.PostAsync("/api/ToDo", content);
+        var response = await this._client.PostAsync("/api/ToDo", content);
 
         if (response.IsSuccessStatusCode)
         {
-            return Redirect(model.ReturnUrl);
+            return this.Redirect(model.ReturnUrl);
         }
 
-        ModelState.AddModelError("", "Failed to create the list.");
-        return View("Index", new List<ToDoViewModel>());
+        this.ModelState.AddModelError("", "Failed to create the list.");
+        return this.View("Index", new List<ToDoViewModel>());
     }
 }

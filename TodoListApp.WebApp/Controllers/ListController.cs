@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -10,21 +8,21 @@ namespace TodoListApp.WebApp.Controllers;
 [Route("List")]
 public class ListController : Controller
 {
-    Uri baseAdress = new Uri("https://localhost:5001/api");
+    private readonly Uri baseAdress = new Uri("https://localhost:5001/api");
     private readonly HttpClient _client;
 
     public ListController()
     {
-        _client = new HttpClient();
-        _client.BaseAddress = baseAdress;
+        this._client = new HttpClient();
+        this._client.BaseAddress = baseAdress;
     }
 
     [Route("Tasks")]
     [HttpGet("Tasks/{id}")]
     public IActionResult Tasks(int id)
     {
-        List<ToDoViewModel> list = new List<ToDoViewModel>();
-        HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + $"/ToDo/tasks/{id}").Result;
+        List<ToDoViewModel> list = [];
+        HttpResponseMessage response = this._client.GetAsync(this._client.BaseAddress + $"/ToDo/tasks/{id}").Result;
 
         if (response.IsSuccessStatusCode)
         {
@@ -32,35 +30,35 @@ public class ListController : Controller
             list = JsonConvert.DeserializeObject<List<ToDoViewModel>>(data);
         }
 
-        HttpResponseMessage listResponse = _client.GetAsync(_client.BaseAddress + $"/ToDoList/{id}").Result;
+        HttpResponseMessage listResponse = this._client.GetAsync(this._client.BaseAddress + $"/ToDoList/{id}").Result;
 
         if (listResponse.IsSuccessStatusCode)
         {
             string listData = listResponse.Content.ReadAsStringAsync().Result;
             var listInfo = JsonConvert.DeserializeObject<ListToDoViewModel>(listData);
-            ViewBag.ListName = listInfo?.Name;
+            this.ViewBag.ListName = listInfo?.Name;
         }
 
-        ViewBag.ListId = id;
+        this.ViewBag.ListId = id;
 
-        return View(list);
+        return this.View(list);
     }
 
     [Route("Edit")]
     [HttpGet("{id}")]
     public async Task<IActionResult> Edit(int id)
     {
-        HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/TodoList/{id}");
+        HttpResponseMessage response = await this._client.GetAsync(this._client.BaseAddress + $"/TodoList/{id}");
 
         if (!response.IsSuccessStatusCode)
         {
-            return NotFound();
+            return this.NotFound();
         }
 
         string data = await response.Content.ReadAsStringAsync();
         var list = JsonConvert.DeserializeObject<ListToDoViewModel>(data);
 
-        return View(list);
+        return this.View(list);
     }
 
     [Route("Edit")]
@@ -76,30 +74,30 @@ public class ListController : Controller
         var json = JsonConvert.SerializeObject(strippedModel);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await _client.PutAsync(_client.BaseAddress + $"/TodoList/{model.Id}", content);
+        var response = await this._client.PutAsync(this._client.BaseAddress + $"/TodoList/{model.Id}", content);
 
         if (response.IsSuccessStatusCode)
         {
-            return RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Index", "Home");
         }
 
-        ModelState.AddModelError("", "Failed to update the list.");
-        return View(model); // Повертає знову на форму з помилкою
+        this.ModelState.AddModelError("", "Failed to update the list.");
+        return this.View(model);
     }
 
     [Route("Delete")]
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
-        var deleteResponse = await _client.DeleteAsync(_client.BaseAddress + $"/TodoList/{id}");
+        var deleteResponse = await this._client.DeleteAsync(this._client.BaseAddress + $"/TodoList/{id}");
 
         if (deleteResponse.IsSuccessStatusCode)
         {
-            return RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Index", "Home");
         }
 
-        ModelState.AddModelError("", "Failed to delete the list.");
-        return RedirectToAction("Index", "Home");
+        this.ModelState.AddModelError("", "Failed to delete the list.");
+        return this.RedirectToAction("Index", "Home");
     }
 
     [HttpPost]
@@ -115,29 +113,28 @@ public class ListController : Controller
         var json = JsonConvert.SerializeObject(strippedModel);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await _client.PostAsync("/api/TodoList", content);
+        var response = await this._client.PostAsync("/api/TodoList", content);
 
         if (response.IsSuccessStatusCode)
         {
-            return RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Index", "Home");
         }
 
-        ModelState.AddModelError("", "Failed to create the list.");
-        return View("Index", new List<ListToDoViewModel>());
+        this.ModelState.AddModelError("", "Failed to create the list.");
+        return this.View("Index", new List<ListToDoViewModel>());
     }
 
     [HttpGet]
     public async Task<IActionResult> Search(string? searchQuery)
     {
-        //HttpResponseMessage allLists = _client.GetAsync(_client.BaseAddress + "/TodoList").Result;
-        var allLists = await _client.GetFromJsonAsync<IEnumerable<ListToDoViewModel>>(_client.BaseAddress + "/TodoList");
+        var allLists = await this._client.GetFromJsonAsync<IEnumerable<ListToDoViewModel>>(this._client.BaseAddress + "/TodoList");
 
         if (!string.IsNullOrEmpty(searchQuery))
         {
             allLists = allLists.Where(list => list.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
         }
 
-        ViewBag.SearchQuery = searchQuery;
-        return View(allLists);
+        this.ViewBag.SearchQuery = searchQuery;
+        return this.View(allLists);
     }
 }

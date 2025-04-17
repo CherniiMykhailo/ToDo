@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TodoListApp.WebApp.Models.ViewModels;
-using TodoListApp.WebApp.Models;
 
 namespace TodoListApp.WebApp.Controllers;
 
@@ -10,37 +9,37 @@ namespace TodoListApp.WebApp.Controllers;
 public class AssignController : Controller
 {
     private readonly SignInManager<IdentityUser> signInManager;
-    Uri baseAdress = new Uri("https://localhost:5001/api");
+    private readonly Uri baseAdress = new Uri("https://localhost:5001/api");
     private readonly HttpClient _client;
 
     public AssignController(SignInManager<IdentityUser> signInManager)
     {
         this.signInManager = signInManager;
-        _client = new HttpClient();
-        _client.BaseAddress = baseAdress;
+        this._client = new HttpClient();
+        this._client.BaseAddress = this.baseAdress;
     }
 
     [Route("Index")]
     public IActionResult Index()
     {
-        if (signInManager.IsSignedIn(User))
+        if (this.signInManager.IsSignedIn(this.User))
         {
-            ViewData["IsAuthenticated"] = true;
-            ViewData["Username"] = User.Identity.Name;
+            this.ViewData["IsAuthenticated"] = true;
+            this.ViewData["Username"] = this.User.Identity.Name;
         }
         else
         {
-            ViewData["IsAuthenticated"] = false;
+            this.ViewData["IsAuthenticated"] = false;
         }
 
         List<ToDoViewModel> list = new List<ToDoViewModel>();
-        HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + $"/ToDo/assigned/{User.Identity.Name}").Result;
+        HttpResponseMessage response = this._client.GetAsync(this._client.BaseAddress + $"/ToDo/assigned/{this.User.Identity.Name}").Result;
 
         if (response.IsSuccessStatusCode)
         {
             string data = response.Content.ReadAsStringAsync().Result;
             list = JsonConvert.DeserializeObject<List<ToDoViewModel>>(data);
         }
-        return View(list);
+        return this.View(list);
     }
 }

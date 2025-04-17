@@ -20,24 +20,24 @@ public class AccountController : Controller
 
     public async Task<IActionResult> Index()
     {
-        if (signInManager.IsSignedIn(User))
+        if (this.signInManager.IsSignedIn(this.User))
         {
-            ViewData["IsAuthenticated"] = true;
-            ViewData["Username"] = User.Identity.Name;
+            this.ViewData["IsAuthenticated"] = true;
+            this.ViewData["Username"] = User.Identity.Name;
         }
         else
         {
-            ViewData["IsAuthenticated"] = false;
+            this.ViewData["IsAuthenticated"] = false;
         }
 
-        return View();
+        return this.View();
     }
 
     [Route("Login")]
     [AllowAnonymous]
     public ViewResult Login(string returnUrl = "/")
     {
-        return View(new LoginViewModel
+        return this.View(new LoginViewModel
         {
             ReturnUrl = returnUrl
         });
@@ -47,7 +47,7 @@ public class AccountController : Controller
     [AllowAnonymous]
     public ViewResult Register(string returnUrl = "/")
     {
-        return View(new RegisterViewModel
+        return this.View(new RegisterViewModel
         {
             ReturnUrl = returnUrl
         });
@@ -57,7 +57,7 @@ public class AccountController : Controller
     [AllowAnonymous]
     public ViewResult Restore(string returnUrl = "/")
     {
-        return View(new RestoreViewModel
+        return this.View(new RestoreViewModel
         {
             ReturnUrl = returnUrl
         });
@@ -69,31 +69,30 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
     {
-        if (ModelState.IsValid)
+        if (this.ModelState.IsValid)
         {
             IdentityUser user = new IdentityUser
             {
                 UserName = registerViewModel.Name
             };
 
-            var result = await userManager.CreateAsync(user, registerViewModel.Password);
+            var result = await this.userManager.CreateAsync(user, registerViewModel.Password);
 
             if (result.Succeeded)
             {
-                await signInManager.SignInAsync(user, isPersistent: false);
+                await this.signInManager.SignInAsync(user, isPersistent: false);
 
-                return RedirectToAction("Login", "Account");
+                return this.RedirectToAction("Login", "Account");
             }
 
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                this.ModelState.AddModelError(string.Empty, error.Description);
             }
         }
 
-        return View(registerViewModel);
+        return this.View(registerViewModel);
     }
-
 
     [HttpPost]
     [Route("Login")]
@@ -101,24 +100,24 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel loginViewModel)
     {
-        if (ModelState.IsValid)
+        if (this.ModelState.IsValid)
         {
-            IdentityUser user = await userManager.FindByNameAsync(loginViewModel.Name);
+            IdentityUser user = await this.userManager.FindByNameAsync(loginViewModel.Name);
 
             if (user != null)
             {
-                await signInManager.SignOutAsync();
+                await this.signInManager.SignOutAsync();
 
-                if ((await signInManager.PasswordSignInAsync(user, loginViewModel.Password, false, false)).Succeeded)
+                if ((await this.signInManager.PasswordSignInAsync(user, loginViewModel.Password, false, false)).Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return this.RedirectToAction("Index", "Home");
                 }
             }
 
-            ModelState.AddModelError(string.Empty, "Invalid name or password.");
+            this.ModelState.AddModelError(string.Empty, "Invalid name or password.");
         }
 
-        return View(loginViewModel);
+        return this.View(loginViewModel);
     }
 
     [Route("Restore")]
@@ -126,44 +125,44 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Restore(RestoreViewModel model)
     {
-        if (ModelState.IsValid)
+        if (this.ModelState.IsValid)
         {
-            var user = await userManager.FindByNameAsync(model.Name);
+            var user = await this.userManager.FindByNameAsync(model.Name);
             if (user != null)
             {
-                var result = await userManager.RemovePasswordAsync(user);
+                var result = await this.userManager.RemovePasswordAsync(user);
                 if (result.Succeeded)
                 {
-                    result = await userManager.AddPasswordAsync(user, model.Password);
-                    return RedirectToAction("Login", "Account");
+                    _ = await this.userManager.AddPasswordAsync(user, model.Password);
+                    return this.RedirectToAction("Login", "Account");
                 }
                 else
                 {
                     foreach(var error in result.Errors)
                     {
-                        ModelState.AddModelError("", error.Description);
+                        this.ModelState.AddModelError("", error.Description);
                     }
 
-                    return View(model);
+                    return this.View(model);
                 }
             }
             else
             {
-                ModelState.AddModelError("", "Name not found");
-                return View(model);
+                this.ModelState.AddModelError("", "Name not found");
+                return this.View(model);
             }
         }
         else
         {
-            ModelState.AddModelError("", "Somethink went wrong");
-            return View(model);
+            this.ModelState.AddModelError("", "Somethink went wrong");
+            return this.View(model);
         }
     }
 
     [Route("Logout")]
     public async Task<IActionResult> Logout()
     {
-        await signInManager.SignOutAsync();
-        return RedirectToAction("Login", "Account");
+        await this.signInManager.SignOutAsync();
+        return this.RedirectToAction("Login", "Account");
     }
 }

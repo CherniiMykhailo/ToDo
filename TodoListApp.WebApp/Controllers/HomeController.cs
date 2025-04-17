@@ -14,40 +14,38 @@ namespace TodoListApp.WebApp.Controllers;
 [Route("Home")]
 public class HomeController : Controller
 {
-    private readonly AppIdentityDbContext context;
     private readonly SignInManager<IdentityUser> signInManager;
-    Uri baseAdress = new Uri("https://localhost:5001/api");
+    private readonly Uri baseAdress = new Uri("https://localhost:5001/api");
     private readonly HttpClient _client;
 
-    public HomeController(AppIdentityDbContext ctx, SignInManager<IdentityUser> signInManager)
+    public HomeController(SignInManager<IdentityUser> signInManager)
     {
-        this.context = ctx;
         this.signInManager = signInManager;
-        _client = new HttpClient();
-        _client.BaseAddress = baseAdress;
+        this._client = new HttpClient();
+        this._client.BaseAddress = baseAdress;
     }
 
     [Route("Index")]
     public IActionResult Index()
     {
-        if (signInManager.IsSignedIn(User))
+        if (this.signInManager.IsSignedIn(this.User))
         {
-            ViewData["IsAuthenticated"] = true;
-            ViewData["Username"] = User.Identity.Name;
+            this.ViewData["IsAuthenticated"] = true;
+            this.ViewData["Username"] = this.User.Identity.Name;
         }
         else
         {
-            ViewData["IsAuthenticated"] = false;
+            this.ViewData["IsAuthenticated"] = false;
         }
 
-        List<ListToDoViewModel> list = new List<ListToDoViewModel>();
-        HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/TodoList").Result;
+        List<ListToDoViewModel> list = [];
+        HttpResponseMessage response = this._client.GetAsync(this._client.BaseAddress + "/TodoList").Result;
 
         if (response.IsSuccessStatusCode)
         {
             string data = response.Content.ReadAsStringAsync().Result;
             list = JsonConvert.DeserializeObject<List<ListToDoViewModel>>(data);
         }
-        return View(list);
+        return this.View(list);
     }
 }

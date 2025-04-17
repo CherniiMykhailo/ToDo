@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using TodoListApp.WebApi.Models;
 using TodoListApp.WebApi.DTOs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using TodoListApp.WebApi;
 
 
 namespace TodoListApp.WebApi.Controllers;
@@ -22,52 +20,52 @@ public class ToDoController : Controller
     [HttpGet("tasks/{listId}")]
     public async Task<IActionResult> GetTasksByListId(int listId)
     {
-        var tasks = await context.ToDos.Where(t => t.ToDoListId == listId).ToListAsync();
-        return Ok(tasks);
+        var tasks = await this.context.ToDos.Where(t => t.ToDoListId == listId).ToListAsync();
+        return this.Ok(tasks);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetTask()
     {
-        var toDo = await context.ToDos.ToListAsync();
-        return Ok(toDo);
+        var toDo = await this.context.ToDos.ToListAsync();
+        return this.Ok(toDo);
     }
 
     [HttpGet("assigned/{userName}")]
     public async Task<IActionResult> GetTasksAssignedTo(string userName)
     {
-        var tasks = await context.ToDos
+        var tasks = await this.context.ToDos
             .Where(t => t.AssignedTo == userName)
             .ToListAsync();
 
-        return Ok(tasks);
+        return this.Ok(tasks);
     }
 
     [HttpGet("category/{category}")]
     public async Task<IActionResult> GetFilteredTasks(string category)
     {
-        var tasks = await context.ToDos
+        var tasks = await this.context.ToDos
             .Include(t => t.Category)
             .Where(t => t.Category.Name == category)
             .ToListAsync();
 
-        return Ok(tasks);
+        return this.Ok(tasks);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTaskDetails(int id)
     {
-        var task = await context.ToDos
+        var task = await this.context.ToDos
             .Include(t => t.Category)
             .Include(t => t.Status)
             .FirstOrDefaultAsync(t => t.ToDoId == id);
 
         if (task == null)
         {
-            return NotFound();
+            return this.NotFound();
         }
 
-        return Ok(task);
+        return this.Ok(task);
     }
 
 
@@ -76,21 +74,21 @@ public class ToDoController : Controller
     {
         try
         {
-            var existingStatus = await context.Statuses
+            var existingStatus = await this.context.Statuses
                 .FirstOrDefaultAsync(s => s.StatusId == toDo.StatusId);
             if (existingStatus == null)
             {
-                return BadRequest("Bad Status.");
+                return this.BadRequest("Bad Status.");
             }
 
-            var existingCategory = await context.Categories
+            var existingCategory = await this.context.Categories
                 .FirstOrDefaultAsync(c => c.CategoryId == toDo.CategoryId);
             if (existingCategory == null)
             {
-                return BadRequest("Bad category.");
+                return this.BadRequest("Bad category.");
             }
 
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 var toDoEntity = new ToDo
                 {
@@ -103,61 +101,61 @@ public class ToDoController : Controller
                     AssignedTo = toDo.AssignedTo,
                 };
 
-                this.context.ToDos.Add(toDoEntity);
-                await context.SaveChangesAsync();
+                _ = this.context.ToDos.Add(toDoEntity);
+                _ = await this.context.SaveChangesAsync();
 
-                return Ok(toDoEntity);
+                return this.Ok(toDoEntity);
             }
 
-            return BadRequest(ModelState);
+            return this.BadRequest(this.ModelState);
         }
         catch (DbUpdateException)
         {
-            return StatusCode(500, "not add new todo.");
+            return this.StatusCode(500, "not add new todo.");
         }
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var toDo = await context.ToDos.FindAsync(id);
+        var toDo = await this.context.ToDos.FindAsync(id);
 
         if (toDo == null)
         {
-            return NotFound("Завдання з таким ID не знайдено.");
+            return this.NotFound("Завдання з таким ID не знайдено.");
         }
 
-        context.ToDos.Remove(toDo);
-        await context.SaveChangesAsync();
+        _ = this.context.ToDos.Remove(toDo);
+        _ = await this.context.SaveChangesAsync();
 
-        return NoContent();
+        return this.NoContent();
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] ToDoDTO updatedToDo)
     {
-        var existingToDo = await context.ToDos
+        var existingToDo = await this.context.ToDos
             .Include(t => t.Category)
             .Include(t => t.Status)
             .FirstOrDefaultAsync(t => t.ToDoId == id);
 
         if (existingToDo == null)
         {
-            return NotFound("Завдання з таким ID не знайдено.");
+            return this.NotFound("Завдання з таким ID не знайдено.");
         }
 
-        var existingCategory = await context.Categories
+        var existingCategory = await this.context.Categories
             .FirstOrDefaultAsync(c => c.CategoryId == updatedToDo.CategoryId);
         if (existingCategory == null)
         {
-            return BadRequest("Невірна категорія.");
+            return this.BadRequest("Невірна категорія.");
         }
 
-        var existingStatus = await context.Statuses
+        var existingStatus = await this.context.Statuses
             .FirstOrDefaultAsync(s => s.StatusId == updatedToDo.StatusId);
         if (existingStatus == null)
         {
-            return BadRequest("Невірний статус.");
+            return this.BadRequest("Невірний статус.");
         }
 
         existingToDo.Description = updatedToDo.Description;
@@ -167,22 +165,8 @@ public class ToDoController : Controller
         existingToDo.Category = existingCategory;
         existingToDo.Status = existingStatus;
 
-        await context.SaveChangesAsync();
+        _ = await this.context.SaveChangesAsync();
 
-        return Ok(existingToDo);
-    }
-
-    [HttpPut("complete/{id}")]
-    public async Task<IActionResult> MarkComplete(int id)
-    {
-        var task = await context.ToDos.FindAsync(id);
-        if (task == null)
-        {
-            return NotFound();
-        }
-
-        task.StatusId = "completed";
-        await context.SaveChangesAsync();
-        return NoContent();
+        return this.Ok(existingToDo);
     }
 }
