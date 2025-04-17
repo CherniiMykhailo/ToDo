@@ -125,4 +125,19 @@ public class ListController : Controller
         ModelState.AddModelError("", "Failed to create the list.");
         return View("Index", new List<ListToDoViewModel>());
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Search(string? searchQuery)
+    {
+        //HttpResponseMessage allLists = _client.GetAsync(_client.BaseAddress + "/TodoList").Result;
+        var allLists = await _client.GetFromJsonAsync<IEnumerable<ListToDoViewModel>>(_client.BaseAddress + "/TodoList");
+
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            allLists = allLists.Where(list => list.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+        }
+
+        ViewBag.SearchQuery = searchQuery;
+        return View(allLists);
+    }
 }
